@@ -1,4 +1,4 @@
-// REQUIRED_ARGS:
+// REQUIRED_ARGS: -g
 
 import std.math: poly;
 import core.stdc.stdarg;
@@ -237,7 +237,8 @@ void assertEqual(real* a, real* b, string file = __FILE__, size_t line = __LINE_
 
     // Only compare the 10 value bytes, the padding bytes are of undefined
     // value.
-    version (X86) enum count = 10;
+    static if(real.sizeof < 10) enum count = real.sizeof; // 8 bytes only
+    else version (X86) enum count = 10;
     else version (X86_64) enum count = 10;
     else enum count = real.sizeof;
     for (size_t i = 0; i < count; i++)
@@ -1011,6 +1012,14 @@ body
     return_ST:                          ;
 	    ;
 	}
+	}
+	static if(real.sizeof != 10)
+	{
+	    // real is 8 byte only, so skip the assembler...
+	    real s = 0;
+	    foreach_reverse(a; A)
+	        s = s * x + a;
+	    return s;
 	}
 	else
 	{

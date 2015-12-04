@@ -416,7 +416,7 @@ void test13955()
 
 extern(C++) class C13161
 {
-    void dummyfunc() {}
+    void dummyfunc();
     long val_5;
     uint val_9;
 }
@@ -431,7 +431,7 @@ extern(C++) size_t getoffset13161();
 
 extern(C++) class C13161a
 {
-    void dummyfunc() {}
+    void dummyfunc();
     c_long_double val_5;
     uint val_9;
 }
@@ -693,6 +693,12 @@ struct S13707
         this.a = a;
         this.b = b;
     }
+    version(CRuntime_Microsoft)
+    {
+        // VC considers structs with constructor not to be POD
+        // so we have to make D think the same (specs differ here)
+        ~this() {}
+    }
 }
 
 extern(C++) S13707 func13707();
@@ -790,7 +796,7 @@ void main()
     test13289();
     test15();
     test16();
-    func13707();
+    test13707();
     func13932(S13932!(-1)(0));
     foo13337(S13337());
     test14195();

@@ -794,20 +794,27 @@ struct S8658
     int[16385] a;
 }
 
-void foo8658(S8658 s)
-{
-    int x;
-}
-
-void test8658()
-{
-    S8658 s;
 version (LDC)
 {
     // LDC_FIXME: The LLVM x86 backend suffers from this as well.
 }
 else
 {
+void foo8658(S8658 s)
+{
+    int x;
+}
+}
+
+void test8658()
+{
+version (LDC)
+{
+    // LDC_FIXME: The LLVM x86 backend suffers from this as well.
+}
+else
+{
+    S8658 s;
     for(int i = 0; i < 1000; i++)
         foo8658(s);
 }
